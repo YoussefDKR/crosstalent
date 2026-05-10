@@ -1844,7 +1844,9 @@ function toggleFAQ(i) {
 /* ═══════════════════════════════════════════
    POST JOB
 ═══════════════════════════════════════════ */
+
 async function submitJob() {
+  console.log(currentUser);
   if (!currentUser) {
     openModal('login');
     return;
