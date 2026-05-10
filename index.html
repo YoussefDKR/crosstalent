@@ -1853,7 +1853,7 @@ async function submitJob() {
 
     alert("Title: " + title);
 
-    const { data, error } = await supabase
+    const { data, error } = await sb
       .from('jobs')
       .insert([
         {
