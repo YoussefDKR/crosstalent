@@ -1844,13 +1844,40 @@ function toggleFAQ(i) {
 /* ═══════════════════════════════════════════
    POST JOB
 ═══════════════════════════════════════════ */
-function submitJob() {
-  if (!currentUser) { openModal('login'); return; }
-  const title   = document.getElementById('pf-title').value.trim();
+async function submitJob() {
+  if (!currentUser) {
+    openModal('login');
+    return;
+  }
+
+  const title = document.getElementById('pf-title').value.trim();
   const company = document.getElementById('pf-company').value.trim();
-  if (!title || !company) { toast('Please fill in job title and company name.', 'error'); return; }
-  const featured = document.getElementById('featured-chk').checked;
-  toast(`Job submitted! ${featured ? 'Featured listing selected. ' : ''}Redirecting to payment…`, 'success');
+
+  if (!title || !company) {
+    toast('Please fill in job title and company name.', 'error');
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from('jobs')
+    .insert([
+      {
+        employer_id: currentUser.id,
+        title: title,
+        company: company
+      }
+    ]);
+
+  if (error) {
+    console.error(error);
+    toast('Failed to post job.', 'error');
+    return;
+  }
+
+  toast('Job posted successfully!', 'success');
+
+  document.getElementById('pf-title').value = '';
+  document.getElementById('pf-company').value = '';
 }
 
 /* ═══════════════════════════════════════════
