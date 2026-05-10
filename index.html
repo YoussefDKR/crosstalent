@@ -1846,40 +1846,34 @@ function toggleFAQ(i) {
 ═══════════════════════════════════════════ */
 
 async function submitJob() {
-  console.log(currentUser);
-  if (!currentUser) {
-    openModal('login');
-    return;
+  alert("Function started");
+
+  try {
+    const title = document.getElementById('pf-title').value.trim();
+
+    alert("Title: " + title);
+
+    const { data, error } = await supabase
+      .from('jobs')
+      .insert([
+        {
+          title: title,
+          company: "Test Company"
+        }
+      ]);
+
+    if (error) {
+      console.error(error);
+      alert("Database error");
+      return;
+    }
+
+    alert("Job saved!");
+
+  } catch(err) {
+    console.error(err);
+    alert("Function crashed");
   }
-
-  const title = document.getElementById('pf-title').value.trim();
-  const company = document.getElementById('pf-company').value.trim();
-
-  if (!title || !company) {
-    toast('Please fill in job title and company name.', 'error');
-    return;
-  }
-
-  const { data, error } = await supabase
-    .from('jobs')
-    .insert([
-      {
-        employer_id: currentUser.id,
-        title: title,
-        company: company
-      }
-    ]);
-
-  if (error) {
-    console.error(error);
-    toast('Failed to post job.', 'error');
-    return;
-  }
-
-  toast('Job posted successfully!', 'success');
-
-  document.getElementById('pf-title').value = '';
-  document.getElementById('pf-company').value = '';
 }
 
 /* ═══════════════════════════════════════════
